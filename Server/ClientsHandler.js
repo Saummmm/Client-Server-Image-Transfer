@@ -7,7 +7,8 @@ let net = require("net");
 module.exports = {
   handleClientJoining: function (sock) {
     //
-    // Enter your code here
+    //
+    console.log("Client");
     //
     // you may need to develop some helper functions
     // that are defined outside this export block
