@@ -12,6 +12,14 @@ let version = command[5];
 
 // Enter your code for the client functionality here
 
+const client = new net.Socket();
+
+client.connect({ port: port, host: addr }, function () {
+  console.log("Connected to ImageDB server on: " + addr + ":" + port);
+
+  client.write(ITPpacket);
+});
+
 //// Some usefull methods ////
 // Feel free to use them, but DON NOT change or add any code in these methods.
 
