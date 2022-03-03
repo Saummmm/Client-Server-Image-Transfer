@@ -3,6 +3,7 @@ let fs = require("fs");
 let open = require("open");
 
 let ITPpacket = require("./ITPRequest"); // uncomment this line after you run npm install command
+const ITPRequest = require("./ITPRequest");
 
 let command = process.argv.slice(2);
 let addr = command[1].split(":")[0];
@@ -12,12 +13,20 @@ let version = command[5];
 
 // Enter your code for the client functionality here
 
+console.log(command, query, version);
+
 const client = new net.Socket();
 
 client.connect({ port: port, host: addr }, function () {
   console.log("Connected to ImageDB server on: " + addr + ":" + port);
+});
 
-  client.write(ITPpacket);
+ITPRequest();
+
+client.write();
+
+client.on("data", (data) => {
+  printPacketBit(data);
 });
 
 //// Some usefull methods ////
