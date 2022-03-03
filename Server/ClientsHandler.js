@@ -6,12 +6,25 @@ let net = require("net");
 
 module.exports = {
   handleClientJoining: function (sock) {
+    var clientAddr = `${sock.remoteAddress}:${sock.remotePort}`;
     //
     //
-    console.log("Client");
+    console.log("Client Joined from: " + clientAddr);
     //
     // you may need to develop some helper functions
     // that are defined outside this export block
+
+    sock.on("error", (err) => {
+      console.log(err);
+    });
+
+    sock.on("data", (data) => {
+      printPacketBit(data);
+    });
+
+    sock.on("close", () => {
+      console.log("connection closed");
+    });
   },
 };
 

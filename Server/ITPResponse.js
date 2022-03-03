@@ -3,9 +3,9 @@
 module.exports = {
   init: function () {
     // feel free to add function parameters as needed
-    let packet =  
+    let packet = 0;
     //
-    
+
     //set v header
 
     //

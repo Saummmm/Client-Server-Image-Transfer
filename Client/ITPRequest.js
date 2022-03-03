@@ -1,7 +1,7 @@
 // You may need to add some delectation here
 
 module.exports = {
-  init: function () {
+  init: function (ver, reqType, timestamp, image) {
     // feel free to add function parameters as needed
     //
     // enter your code here
