@@ -7,9 +7,13 @@ let net = require("net");
 module.exports = {
   handleClientJoining: function (sock) {
     var clientAddr = `${sock.remoteAddress}:${sock.remotePort}`;
+    let initialTime = singleton.getTimestamp();
     //
     //
-    console.log("Client Joined from: " + clientAddr);
+    console.log(
+      "Client-" + initialTime + " is connected at timestamp " + initialTime
+    );
+
     //
     // you may need to develop some helper functions
     // that are defined outside this export block
@@ -19,7 +23,12 @@ module.exports = {
     });
 
     sock.on("data", (data) => {
+      //receiving data converting buffer to array
+      let header = data.toJSON().data.slice(0, 12);
+      let body = data.toJSON().data.slice(12, data.toJSON().data.length);
+      console.log("ITP packet received:");
       printPacketBit(data);
+
       sock.write("Server Response");
       sock.pipe(sock);
     });
