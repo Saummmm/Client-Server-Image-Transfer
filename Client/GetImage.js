@@ -10,7 +10,6 @@ let command = process.argv.slice(2);
 let addr = command[1].split(":")[0];
 let port = command[1].split(":")[1];
 let query = command[3];
-let version = command[5];
 
 // Enter your code for the client functionality here
 const client = new net.Socket();
