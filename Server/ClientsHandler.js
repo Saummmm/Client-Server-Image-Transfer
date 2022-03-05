@@ -1,6 +1,8 @@
 let ITPpacket = require("./ITPResponse");
 let singleton = require("./Singleton");
 let net = require("net");
+let fs = require("fs");
+let image = require("./images/");
 
 // You may need to add some delectation here
 
@@ -26,7 +28,33 @@ module.exports = {
       printPacketBit(data);
 
       let version = parseBitPacket(header, 0, 4);
-      console.log(version);
+      let fileName = bytesToString(body);
+      let fileType = "";
+
+      switch (parseBitPacket(header, 64, 4)) {
+        case 1:
+          fileType = "bmp";
+          break;
+        case 2:
+          fileType = "jpeg";
+          break;
+        case 3:
+          fileType = "gif";
+          break;
+        case 4:
+          fileType = "png";
+          break;
+        case 5:
+          fileType = "tiff";
+          break;
+        case 15:
+          fileType = "raw";
+          break;
+      }
+
+      let foundCode = 3;
+
+      let img = fs.createReadStream(`./images/${fileName}.${fileType}`);
 
       sock.write("Server Response");
       sock.pipe(sock);
@@ -37,6 +65,27 @@ module.exports = {
     });
   },
 };
+
+function getBase64FromImageUrl(url) {
+  var img = new Image();
+
+  img.setAttribute("crossOrigin", "anonymous");
+
+  img.onload = function () {
+    var canvas = document.createElement("canvas");
+    canvas.width = this.width;
+    canvas.height = this.height;
+
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(this, 0, 0);
+
+    var dataURL = canvas.toDataURL("image/png");
+
+    alert(dataURL.replace(/^data:image\/(png|jpg);base64,/, ""));
+  };
+
+  img.src = url;
+}
 
 //// Some usefull methods ////
 // Feel free to use them, but DON NOT change or add any code in these methods.
