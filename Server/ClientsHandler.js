@@ -14,10 +14,6 @@ module.exports = {
       "Client-" + initialTime + " is connected at timestamp " + initialTime
     );
 
-    //
-    // you may need to develop some helper functions
-    // that are defined outside this export block
-
     sock.on("error", (err) => {
       console.log(err);
     });
@@ -28,6 +24,9 @@ module.exports = {
       let body = data.toJSON().data.slice(12, data.toJSON().data.length);
       console.log("ITP packet received:");
       printPacketBit(data);
+
+      let version = parseBitPacket(header, 0, 4);
+      console.log(version);
 
       sock.write("Server Response");
       sock.pipe(sock);

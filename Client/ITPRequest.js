@@ -17,7 +17,7 @@ module.exports = {
   ],
   payload: "",
 
-  init: function (reqType, image) {
+  init: function (reqType, image, timeStamp) {
     //setting version
     let version = 7;
     storeBitPacket(this.header, version, 0, 4);
