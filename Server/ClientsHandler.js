@@ -93,7 +93,7 @@ module.exports = {
     });
 
     sock.on("close", () => {
-      console.log("connection closed");
+      console.log(`Client-${initialTime} close the connection`);
     });
   },
 };
