@@ -1,5 +1,5 @@
 {
-  "name": "enter the assignment name here",
+  "name": "Assignment 1",
   "version": "1.0.0",
   "description": "",
   "main": "../Client/GetImage.js",
@@ -7,6 +7,6 @@
     "open": "^8.4.0"
   },
   "devDependencies": {},
-  "author": "enter your name here",
+  "author": "Saumya Bucg",
   "license": "ISC"
 }

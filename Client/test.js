@@ -1,1 +1,0 @@
-let Singleton = require("./");
