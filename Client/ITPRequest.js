@@ -107,12 +107,6 @@ function stringToBytes(str) {
   return re;
 }
 
-// var packet = ["00000000", "00000000", "00000000", "00000000"];
-
-// storeBitPacket(packet, 7, 0, 4);
-
-// console.log(stringToBytes("roses"));
-
 // Store integer value into specific bit poistion the packet
 function storeBitPacket(packet, value, offset, length) {
   // let us get the actual byte position of the offset
@@ -129,5 +123,4 @@ function storeBitPacket(packet, value, offset, length) {
     }
     lastBitPosition--;
   }
-  // console.log(packet);
 }

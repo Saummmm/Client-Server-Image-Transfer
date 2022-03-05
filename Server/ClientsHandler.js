@@ -69,10 +69,9 @@ module.exports = {
 
       //checking for file
       if (fs.existsSync(`./images/${fileName}.${fileType}`)) {
-        // console.log("found file");
         foundCode = 1;
+        //reading data from file
         img = fs.readFileSync(`./images/${fileName}.${fileType}`);
-        // let buf = Buffer.from(img, "binary");
       } else {
         foundCode = 2;
       }
