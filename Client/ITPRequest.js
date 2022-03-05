@@ -1,6 +1,7 @@
 // You may need to add some delectation here
 
 module.exports = {
+  //header and payload arrays
   header: [
     "00000000", //start of last row
     "00000000",
@@ -22,6 +23,7 @@ module.exports = {
     let version = 7;
     storeBitPacket(this.header, version, 0, 4);
 
+    //splitting file name and type from image name
     let fileName = image.split(".")[0];
     let fileType = image.split(".")[1];
 

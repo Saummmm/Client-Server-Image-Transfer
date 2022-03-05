@@ -17,7 +17,7 @@ module.exports = {
   ],
   payload: "",
   init: function (responseType, seqNumber, timeStamp, img) {
-    // feel free to add function parameters as needed
+    //storing data to the header
     let version = 7;
     storeBitPacket(this.header, version, 0, 4);
 
@@ -27,8 +27,10 @@ module.exports = {
 
     storeBitPacket(this.header, timeStamp, 32, 32);
 
+    //taking image data, converting into buffer to encode in binary then to an array
     this.payload = Buffer.from(img, "binary").toJSON().data;
 
+    //getting length and storing to header
     storeBitPacket(this.header, this.payload.length, 64, 32);
   },
 

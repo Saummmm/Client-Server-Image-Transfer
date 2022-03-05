@@ -8,10 +8,11 @@ const ITPResponse = require("./ITPResponse");
 
 module.exports = {
   handleClientJoining: function (sock) {
+    //client connected
     var clientAddr = `${sock.remoteAddress}:${sock.remotePort}`;
     let initialTime = singleton.getTimestamp();
-    //
-    //
+
+    //log timestamp
     console.log(
       "Client-" + initialTime + " is connected at timestamp " + initialTime
     );
@@ -20,19 +21,22 @@ module.exports = {
       console.log(err);
     });
 
+    //on retrieving data
     sock.on("data", (data) => {
-      //receiving data converting buffer to array
+      //receiving data converting buffer to array and split into header and body
       let header = data.toJSON().data.slice(0, 12);
       let body = data.toJSON().data.slice(12, data.toJSON().data.length);
       console.log("ITP packet received:");
       printPacketBit(data);
 
+      //retieve info from header and file name from body
       let version = parseBitPacket(header, 0, 4);
       let fileName = bytesToString(body);
       let clientTimeStamp = parseBitPacket(header, 32, 32);
       let reqType = "Query";
       let fileType = "";
 
+      //finding image type
       switch (parseBitPacket(header, 64, 4)) {
         case 1:
           fileType = "bmp";
@@ -54,6 +58,7 @@ module.exports = {
           break;
       }
 
+      //logging info from header
       console.log(
         `Client-${initialTime} requests:\n\t--ITP Version: ${version}\n\t--Timestamp: ${clientTimeStamp}\n\t--Request type: ${reqType}\n\t--Image file extension: ${fileType}\n\t--Image file name: ${fileName}`
       );
@@ -62,6 +67,7 @@ module.exports = {
 
       let img = "";
 
+      //checking for file
       if (fs.existsSync(`./images/${fileName}.${fileType}`)) {
         // console.log("found file");
         foundCode = 1;
@@ -71,13 +77,17 @@ module.exports = {
         foundCode = 2;
       }
 
+      //get sequence and time stamp
       let seqNumber = singleton.getSequenceNumber();
       let timeStamp = singleton.getTimestamp();
 
+      //create response packet
       ITPResponse.init(foundCode, seqNumber, timeStamp, img);
 
+      //get response packet
       let packet = ITPResponse.getPacket();
 
+      //send packet back to client
       sock.write(packet);
       sock.pipe(sock);
     });

@@ -5,10 +5,11 @@ module.exports = {
   timerVal: 0,
   init: function () {
     // init function needs to be implemented here //
+    //random number between 0 and 999 for the initial val of timer
     this.timerVal = Math.floor(Math.random() * 999);
     setInterval(() => {
       this.timerVal++;
-
+      //once timer reaches 2^32, it will reset
       if (this.timerVal == 2 ** 32) {
         this.timerVal = 0;
       }
