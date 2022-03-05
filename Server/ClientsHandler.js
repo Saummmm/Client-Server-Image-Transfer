@@ -20,6 +20,8 @@ module.exports = {
 
     sock.on("data", (data) => {
       printPacketBit(data);
+      sock.write("Server Response");
+      sock.pipe(sock);
     });
 
     sock.on("close", () => {

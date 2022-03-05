@@ -10,23 +10,28 @@ let addr = command[1].split(":")[0];
 let port = command[1].split(":")[1];
 let query = command[3];
 let version = command[5];
-
-// Enter your code for the client functionality here
-
 console.log(command, query, version);
 
+// Enter your code for the client functionality here
 const client = new net.Socket();
 
 client.connect({ port: port, host: addr }, function () {
   console.log("Connected to ImageDB server on: " + addr + ":" + port);
+
+  ITPRequest.init(command[2], query);
+
+  let packet = ITPRequest.getBytePacket();
+
+  client.write(packet);
 });
-
-ITPRequest();
-
-client.write();
 
 client.on("data", (data) => {
   printPacketBit(data);
+  client.destroy();
+});
+
+client.on("close", () => {
+  console.log("Connection Closed");
 });
 
 //// Some usefull methods ////
