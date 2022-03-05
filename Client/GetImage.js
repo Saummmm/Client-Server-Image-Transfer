@@ -1,7 +1,7 @@
 let net = require("net");
 let fs = require("fs");
 let open = require("open");
-let singleton = require("../Server/Singleton");
+let singleton = require("./ClientSingleton");
 let ITPpacket = require("./ITPRequest"); // uncomment this line after you run npm install command
 const ITPRequest = require("./ITPRequest");
 const { exit } = require("process");
@@ -17,9 +17,10 @@ const client = new net.Socket();
 
 singleton.init();
 
-let timeStamp = singleton.getTimestamp();
+let timeStamp = 0;
 
 client.connect({ port: port, host: addr }, function () {
+  timeStamp = singleton.getTimestamp();
   console.log("Connected to ImageDB server on: " + addr + ":" + port);
 
   ITPRequest.init(command[2], query, timeStamp);

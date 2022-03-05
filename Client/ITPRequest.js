@@ -57,8 +57,7 @@ module.exports = {
     storeBitPacket(this.header, reqType, 24, 8);
 
     //setting time stamp
-    let timestamp = 0;
-    storeBitPacket(this.header, timestamp, 32, 32);
+    storeBitPacket(this.header, timeStamp, 32, 32);
 
     //setting image name topayload
     let imageName = stringToBytes(fileName);
