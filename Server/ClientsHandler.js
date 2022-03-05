@@ -2,7 +2,7 @@ let ITPpacket = require("./ITPResponse");
 let singleton = require("./Singleton");
 let net = require("net");
 let fs = require("fs");
-let image = require("./images/");
+const ITPResponse = require("./ITPResponse");
 
 // You may need to add some delectation here
 
@@ -29,6 +29,8 @@ module.exports = {
 
       let version = parseBitPacket(header, 0, 4);
       let fileName = bytesToString(body);
+      let clientTimeStamp = parseBitPacket(header, 32, 32);
+      let reqType = "Query";
       let fileType = "";
 
       switch (parseBitPacket(header, 64, 4)) {
@@ -52,11 +54,31 @@ module.exports = {
           break;
       }
 
+      console.log(
+        `Client-${initialTime} requests:\n\t--ITP Version: ${version}\n\t--Timestamp: ${clientTimeStamp}\n\t--Request type: ${reqType}\n\t--Image file extension: ${fileType}\n\t--Image file name: ${fileName}`
+      );
+
       let foundCode = 3;
 
-      let img = fs.createReadStream(`./images/${fileName}.${fileType}`);
+      let img = "";
 
-      sock.write("Server Response");
+      if (fs.existsSync(`./images/${fileName}.${fileType}`)) {
+        // console.log("found file");
+        foundCode = 1;
+        img = fs.readFileSync(`./images/${fileName}.${fileType}`);
+        // let buf = Buffer.from(img, "binary");
+      } else {
+        foundCode = 2;
+      }
+
+      let seqNumber = singleton.getSequenceNumber();
+      let timeStamp = singleton.getTimestamp();
+
+      ITPResponse.init(foundCode, seqNumber, timeStamp, img);
+
+      let packet = ITPResponse.getPacket();
+
+      sock.write(packet);
       sock.pipe(sock);
     });
 
@@ -65,27 +87,6 @@ module.exports = {
     });
   },
 };
-
-function getBase64FromImageUrl(url) {
-  var img = new Image();
-
-  img.setAttribute("crossOrigin", "anonymous");
-
-  img.onload = function () {
-    var canvas = document.createElement("canvas");
-    canvas.width = this.width;
-    canvas.height = this.height;
-
-    var ctx = canvas.getContext("2d");
-    ctx.drawImage(this, 0, 0);
-
-    var dataURL = canvas.toDataURL("image/png");
-
-    alert(dataURL.replace(/^data:image\/(png|jpg);base64,/, ""));
-  };
-
-  img.src = url;
-}
 
 //// Some usefull methods ////
 // Feel free to use them, but DON NOT change or add any code in these methods.

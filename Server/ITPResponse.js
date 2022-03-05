@@ -1,22 +1,44 @@
 // You may need to add some delectation here
 
 module.exports = {
-  init: function () {
+  header: [
+    "00000000", //start of last row
+    "00000000",
+    "00000000",
+    "00000000",
+    "00000000", //start of second row
+    "00000000",
+    "00000000",
+    "00000000",
+    "00000000", //start of third row
+    "00000000",
+    "00000000",
+    "00000000",
+  ],
+  payload: "",
+  init: function (responseType, seqNumber, timeStamp, img) {
     // feel free to add function parameters as needed
-    let packet = 0;
-    //
+    let version = 7;
+    storeBitPacket(this.header, version, 0, 4);
 
-    //set v header
+    storeBitPacket(this.header, responseType, 4, 8);
 
-    //
+    storeBitPacket(this.header, seqNumber, 12, 20);
+
+    storeBitPacket(this.header, timeStamp, 32, 32);
+
+    this.payload = Buffer.from(img, "binary").toJSON().data;
+
+    storeBitPacket(this.header, this.payload.length, 64, 32);
   },
 
   //--------------------------
   //getpacket: returns the entire packet
   //--------------------------
   getPacket: function () {
-    // enter your code here
-    return "this should be a correct packet";
+    let packet = this.header.concat(this.payload);
+    let buf = Buffer.from(packet);
+    return buf;
   },
 };
 

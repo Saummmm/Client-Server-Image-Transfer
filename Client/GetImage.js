@@ -4,13 +4,13 @@ let open = require("open");
 let singleton = require("../Server/Singleton");
 let ITPpacket = require("./ITPRequest"); // uncomment this line after you run npm install command
 const ITPRequest = require("./ITPRequest");
+const { exit } = require("process");
 
 let command = process.argv.slice(2);
 let addr = command[1].split(":")[0];
 let port = command[1].split(":")[1];
 let query = command[3];
 let version = command[5];
-console.log(command, query, version);
 
 // Enter your code for the client functionality here
 const client = new net.Socket();
@@ -30,8 +30,43 @@ client.connect({ port: port, host: addr }, function () {
 });
 
 client.on("data", (data) => {
-  printPacketBit(data);
+  let header = data.toJSON().data.slice(0, 12);
+  let body = data.toJSON().data.slice(12, data.toJSON().data.length);
+  printPacketBit(header);
+
+  let version = parseBitPacket(header, 0, 4);
+  let responseType = "";
+
+  switch (parseBitPacket(header, 4, 8)) {
+    case 1:
+      responseType = "Found";
+      break;
+    case 2:
+      responseType = "Not Found";
+      break;
+    default:
+      responseType = "Busy";
+      break;
+  }
+
+  let seqNumber = parseBitPacket(header, 12, 20);
+
+  let serverTimeStamp = parseBitPacket(header, 32, 32);
+
+  const buf = Buffer.from(body);
+
+  console.log(
+    `Server sent:\n\t--ITP Version: ${version}\n\t--Response Type: ${responseType}\n\t--Sequence Number: ${seqNumber}\n\t--TimeStamp: ${serverTimeStamp}`
+  );
+
+  fs.writeFileSync(`${query}`, buf);
+
+  open(`${query}`, { wait: false });
+
+  console.log("Disconnected from the server");
   client.destroy();
+
+  setTimeout(exit, 1000);
 });
 
 client.on("close", () => {
